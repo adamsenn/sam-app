@@ -1,0 +1,14 @@
+check for files (schedule trigger)
+- validate files have not already been processed in SQL table
+- enqueue file to stage
+
+stage data for new file (queue trigger)
+- pull file via FTP
+- import file to stg table
+- build indices
+- promote stg table
+- enqueue reprocess
+
+reprocess transformations (queue trigger)
+- build hierarchy
+- replace any previous S3 data files
