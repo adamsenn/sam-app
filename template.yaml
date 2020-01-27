@@ -24,6 +24,26 @@ Resources:
             Path: /hello
             Method: get
 
+  sqsPayloadLoggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: queue_logger/
+      Handler: app.lambda_handler
+      Runtime: python3.8
+      Description: A Lambda function that logs the payload of messages sent to an associated SQS queue.
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Events:
+        SimpleQueueEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SimpleQueue.Arn
+
+  # This is an SQS queue with all default configuration properties. To learn more about the available options, see
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-queues.html
+  SimpleQueue:
+    Type: AWS::SQS::Queue
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
