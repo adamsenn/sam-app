@@ -187,6 +187,7 @@ celerybeat-schedule.*
 *.sage.py
 
 # Environments
+.aws-sam/
 .env
 .venv
 env/
@@ -209,10 +210,7 @@ venv.bak/
 .mypy_cache/
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 .history
 
 ### Windows ###
