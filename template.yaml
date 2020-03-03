@@ -16,7 +16,10 @@ Resources:
     Properties:
       CodeUri: hello_world/
       Handler: app.lambda_handler
-      Runtime: python3.8
+      Runtime: python3.7
+      Environment:
+        Variables:
+          DATABASE: server;user;password
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -24,12 +27,28 @@ Resources:
             Path: /hello
             Method: get
 
+  PassthruFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: passthru/
+      Handler: app.lambda_handler
+      Runtime: python3.7
+      Environment:
+        Variables:
+          DATABASE: server;user;password
+      Events:
+        Users:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users
+            Method: get
+
   sqsPayloadLoggerFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: queue_logger/
       Handler: app.lambda_handler
-      Runtime: python3.8
+      Runtime: python3.7
       Description: A Lambda function that logs the payload of messages sent to an associated SQS queue.
       Policies:
         - AWSLambdaBasicExecutionRole
@@ -57,3 +76,12 @@ Outputs:
   HelloWorldFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt HelloWorldFunctionRole.Arn
+  PassthruApi:
+    Description: "API Gateway endpoint URL for Prod stage for Passthru function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/users/"
+  PassthruFunction:
+    Description: "Passthru Lambda Function ARN"
+    Value: !GetAtt PassthruFunction.Arn
+  PassthruFunctionIamRole:
+    Description: "Implicit IAM Role created for passthru function"
+    Value: !GetAtt PassthruFunctionRole.Arn
